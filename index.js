@@ -25,7 +25,18 @@ app.get("/api/hello", function (req, res) {
 });
 app.get("/api/:date", function (req, res) {
   const {date} = req.params;
-
+  const dateToUTC = new Date(date).toUTCString()
+  const resDate = {}
+  if(!(dateToUTC=="Invalid Date")){
+    dateToUnix = new Date(date).getTime();
+    resDate["unix"] = dateToUnix
+    resDate["utc"] = dateToUTC;
+  }else {
+    resDate["unix"] = date;
+    const toDate = new Date(+date)
+    resDate["utc"] = new Date(toDate).toUTCString()
+  }
+  res.send(resDate)
 });
 
 
