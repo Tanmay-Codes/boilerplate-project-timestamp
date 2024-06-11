@@ -43,7 +43,7 @@ app.get("/api/:date", function (req, res) {
     resDate["utc"] = dateToUTC;
   } else {
     if (regex.test(date)) {
-      resDate["unix"] = date;
+      resDate["unix"] = +date;
       const toDate = new Date(+date);
       resDate["utc"] = new Date(toDate).toUTCString();
     } else {
