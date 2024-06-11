@@ -2,46 +2,58 @@
 // where your node app starts
 
 // init project
-var express = require('express');
+var express = require("express");
 var app = express();
 
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
-// so that your API is remotely testable by FCC 
-var cors = require('cors');
-app.use(cors({optionsSuccessStatus: 200}));  // some legacy browsers choke on 204
+// so that your API is remotely testable by FCC
+var cors = require("cors");
+app.use(cors({ optionsSuccessStatus: 200 })); // some legacy browsers choke on 204
 
 // http://expressjs.com/en/starter/static-files.html
-app.use(express.static(__dirname + '/public/'));
+app.use(express.static(__dirname + "/public/"));
 
 // http://expressjs.com/en/starter/basic-routing.html
 app.get("/", function (req, res) {
-  res.sendFile(__dirname + '/views/index.html');
+  res.sendFile(__dirname + "/views/index.html");
 });
 
-
-// your first API endpoint... 
+// your first API endpoint...
 app.get("/api/hello", function (req, res) {
-  res.json({greeting: 'hello API'});
+  res.json({ greeting: "hello API" });
+});
+app.get("/api/", function (req, res) {
+  const resDate = {};
+  const dateToUTC = new Date().toUTCString();
+  if (!(dateToUTC == "Invalid Date")) {
+    dateToUnix = new Date().getTime();
+    resDate["unix"] = dateToUnix;
+    resDate["utc"] = dateToUTC;
+  }
+  res.send(resDate);
 });
 app.get("/api/:date", function (req, res) {
-  const {date} = req.params;
-  const dateToUTC = new Date(date).toUTCString()
-  const resDate = {}
-  if(!(dateToUTC=="Invalid Date")){
+  let regex = /^\d+$/;
+  const { date } = req.params;
+  const dateToUTC = new Date(date).toUTCString();
+  const resDate = {};
+  if (!(dateToUTC == "Invalid Date")) {
     dateToUnix = new Date(date).getTime();
-    resDate["unix"] = dateToUnix
+    resDate["unix"] = dateToUnix;
     resDate["utc"] = dateToUTC;
-  }else {
-    resDate["unix"] = date;
-    const toDate = new Date(+date)
-    resDate["utc"] = new Date(toDate).toUTCString()
+  } else {
+    if (regex.test(date)) {
+      resDate["unix"] = date;
+      const toDate = new Date(+date);
+      resDate["utc"] = new Date(toDate).toUTCString();
+    } else {
+      resDate["error"] = "Invalid Date";
+    }
   }
-  res.send(resDate)
+  res.send(resDate);
 });
-
-
 
 // Listen on port set in environment variable or default to 3000
 var listener = app.listen(process.env.PORT || 3000, function () {
-  console.log('Your app is listening on port ' + listener.address().port);
+  console.log("Your app is listening on port " + listener.address().port);
 });
